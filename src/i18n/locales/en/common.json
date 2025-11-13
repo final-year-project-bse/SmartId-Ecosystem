@@ -1,0 +1,55 @@
+{
+  "brand": "SmartID",
+  "nav": {
+    "dashboard": "Dashboard",
+    "enroll": "Enroll",
+    "authenticate": "Authenticate",
+    "sessions": "Sessions",
+    "today": "Today",
+    "reports": "Reports",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
+  "buttons": {
+    "capture": "Capture",
+    "retake": "Retake",
+    "submit": "Submit",
+    "start": "Start Session",
+    "stop": "Stop Session",
+    "export": "Export CSV",
+    "markRead": "Mark as Read",
+    "save": "Save",
+    "login": "Sign In",
+    "signup": "Sign Up",
+    "logout": "Logout"
+  },
+  "labels": {
+    "username": "Username",
+    "email": "Email",
+    "studentId": "Student ID",
+    "role": "Role",
+    "consent": "I consent to facial recognition",
+    "course": "Course",
+    "dateRange": "Date Range",
+    "theme": "Theme",
+    "language": "Language",
+    "password": "Password",
+    "fullName": "Full Name"
+  },
+  "roles": {
+    "ADMIN": "Admin",
+    "PROFESSOR": "Professor",
+    "STUDENT": "Student"
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "signInMessage": "Sign in to your SmartID account",
+    "createAccount": "Create Account",
+    "signUpMessage": "Join SmartID for seamless attendance management",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "orContinueWith": "Or continue with"
+  }
+}

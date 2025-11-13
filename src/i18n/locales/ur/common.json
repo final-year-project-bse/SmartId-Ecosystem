@@ -1,0 +1,55 @@
+{
+  "brand": "سمارٹ آئی ڈی",
+  "nav": {
+    "dashboard": "ڈیش بورڈ",
+    "enroll": "اندراج",
+    "authenticate": "تصدیق",
+    "sessions": "سیشنز",
+    "today": "آج",
+    "reports": "رپورٹس",
+    "notifications": "اطلاعات",
+    "settings": "ترتیبات"
+  },
+  "buttons": {
+    "capture": "تصویر لیں",
+    "retake": "دوبارہ لیں",
+    "submit": "جمع کریں",
+    "start": "سیشن شروع کریں",
+    "stop": "سیشن بند کریں",
+    "export": "CSV برآمد کریں",
+    "markRead": "پڑھا ہوا نشان لگائیں",
+    "save": "محفوظ کریں",
+    "login": "لاگ ان",
+    "signup": "سائن اپ",
+    "logout": "لاگ آؤٹ"
+  },
+  "labels": {
+    "username": "صارف نام",
+    "email": "ای میل",
+    "studentId": "طالب علم آئی ڈی",
+    "role": "کردار",
+    "consent": "میں چہرے کی شناخت پر رضامند ہوں",
+    "course": "کورس",
+    "dateRange": "تاریخ کی حد",
+    "theme": "تھیم",
+    "language": "زبان",
+    "password": "پاس ورڈ",
+    "fullName": "پورا نام"
+  },
+  "roles": {
+    "ADMIN": "ایڈمن",
+    "PROFESSOR": "پروفیسر",
+    "STUDENT": "طالب علم"
+  },
+  "auth": {
+    "welcomeBack": "خوش آمدید",
+    "signInMessage": "اپنے سمارٹ آئی ڈی اکاؤنٹ میں سائن ان کریں",
+    "createAccount": "اکاؤنٹ بنائیں",
+    "signUpMessage": "حاضری کے بہتر انتظام کے لیے سمارٹ آئی ڈی میں شامل ہوں",
+    "forgotPassword": "پاس ورڈ بھول گئے؟",
+    "rememberMe": "مجھے یاد رکھیں",
+    "noAccount": "اکاؤنٹ نہیں ہے؟",
+    "haveAccount": "پہلے سے اکاؤنٹ ہے؟",
+    "orContinueWith": "یا جاری رکھیں"
+  }
+}
