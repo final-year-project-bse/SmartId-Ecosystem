@@ -2,18 +2,17 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { useTranslation } from 'react-i18next';
-import { LogIn, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Eye, EyeOff, UserCircle, GraduationCap, Shield } from 'lucide-react';
 import useAppStore from '../store/useAppStore';
 
 const Login = () => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const setUser = useAppStore((state) => state.setUser);
   
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    role: 'STUDENT', // Default role
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,20 +26,23 @@ const Login = () => {
     // Get all users from store
     const { students, professors, admins } = useAppStore.getState();
     
-    // Combine all users
-    const allUsers = [
-      ...admins.map(u => ({ ...u, role: 'ADMIN' })),
-      ...professors.map(u => ({ ...u, role: 'PROFESSOR' })),
-      ...students.map(u => ({ ...u, role: 'STUDENT' })),
-    ];
+    // Combine all users based on selected role
+    let allUsers = [];
+    if (formData.role === 'ADMIN') {
+      allUsers = admins.map(u => ({ ...u, role: 'ADMIN' }));
+    } else if (formData.role === 'PROFESSOR') {
+      allUsers = professors.map(u => ({ ...u, role: 'PROFESSOR' }));
+    } else if (formData.role === 'STUDENT') {
+      allUsers = students.map(u => ({ ...u, role: 'STUDENT' }));
+    }
 
     // Simulate authentication
     setTimeout(() => {
-      // Find user by email
+      // Find user by email and role
       const user = allUsers.find(u => u.email === formData.email);
 
       if (!user) {
-        setError('User not found. Please check your email.');
+        setError(`No ${formData.role.toLowerCase()} account found with this email.`);
         setLoading(false);
         return;
       }
@@ -65,7 +67,15 @@ const Login = () => {
         role: user.role,
       });
       
-      navigate('/');
+      // Redirect to role-specific dashboard
+      if (user.role === 'ADMIN') {
+        navigate('/admin/dashboard');
+      } else if (user.role === 'PROFESSOR') {
+        navigate('/professor/dashboard');
+      } else if (user.role === 'STUDENT') {
+        navigate('/student/dashboard');
+      }
+      
       setLoading(false);
     }, 1000);
   };
@@ -94,6 +104,53 @@ const Login = () => {
                 {error}
               </div>
             )}
+
+            {/* Role Selection */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
+                Login As
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'STUDENT' })}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
+                    formData.role === 'STUDENT'
+                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                  }`}
+                >
+                  <GraduationCap size={24} className="mb-2" />
+                  <span className="text-sm font-medium">Student</span>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'PROFESSOR' })}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
+                    formData.role === 'PROFESSOR'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                  }`}
+                >
+                  <UserCircle size={24} className="mb-2" />
+                  <span className="text-sm font-medium">Teacher</span>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'ADMIN' })}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
+                    formData.role === 'ADMIN'
+                      ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                  }`}
+                >
+                  <Shield size={24} className="mb-2" />
+                  <span className="text-sm font-medium">Admin</span>
+                </button>
+              </div>
+            </div>
 
             <Input
               label="Email Address"

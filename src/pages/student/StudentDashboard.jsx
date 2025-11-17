@@ -3,11 +3,11 @@ import { Badge } from '../../components/ui/Badge';
 import { Table } from '../../components/ui/Table';
 import AttendanceChart from '../../components/attendance/AttendanceChart';
 import useAppStore from '../../store/useAppStore';
-import { BookOpen, CheckCircle, Clock, XCircle, TrendingUp } from 'lucide-react';
+import { BookOpen, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
 const StudentDashboard = () => {
-  const { user, courses, sessions, attendance } = useAppStore();
+  const { courses, sessions, attendance } = useAppStore();
   
   // Assuming current user is a student with ID
   const studentId = 'S001'; // This should come from user.id in real implementation
@@ -99,6 +99,19 @@ const StudentDashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* Role Banner */}
+      <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">
+            👨‍🎓
+          </div>
+          <div>
+            <p className="text-sm opacity-90">Accessing as</p>
+            <h2 className="text-2xl font-bold">Student Portal</h2>
+          </div>
+        </div>
+      </div>
+
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">My Dashboard</h1>
         <p className="text-slate-600 dark:text-slate-400 mt-2">Track your attendance and course progress</p>

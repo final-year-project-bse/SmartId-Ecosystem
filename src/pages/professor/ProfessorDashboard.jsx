@@ -17,7 +17,6 @@ const ProfessorDashboard = () => {
   let sessionAttendance = [];
   
   if (activeSession) {
-    const course = courses.find(c => c.id === activeSession.courseId);
     const enrolledStudents = students.filter(s => s.enrolledCourses.includes(activeSession.courseId));
     
     sessionAttendance = enrolledStudents.map(student => {
@@ -107,6 +106,19 @@ const ProfessorDashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* Role Banner */}
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">
+            👨‍🏫
+          </div>
+          <div>
+            <p className="text-sm opacity-90">Accessing as</p>
+            <h2 className="text-2xl font-bold">Professor Portal</h2>
+          </div>
+        </div>
+      </div>
+
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Professor Dashboard</h1>
         <p className="text-slate-600 dark:text-slate-400 mt-2">Monitor class attendance and student status</p>
@@ -150,7 +162,7 @@ const ProfessorDashboard = () => {
           <div className="text-center py-12">
             <Clock className="mx-auto mb-4 text-slate-400" size={48} />
             <p className="text-slate-600 dark:text-slate-400 mb-4">No active session at the moment</p>
-            <a href="/sessions" className="text-primary hover:text-primary-600 font-medium">
+            <a href="/dashboard/sessions" className="text-primary hover:text-primary-600 font-medium">
               Start a Session →
             </a>
           </div>

@@ -2,10 +2,10 @@ import { create } from 'zustand';
 
 const useAppStore = create((set) => ({
   user: {
-    id: '1',
-    username: 'admin',
-    email: 'admin@smartid.edu',
-    role: 'ADMIN', // ADMIN | PROFESSOR | STUDENT
+    id: '',
+    username: '',
+    email: '',
+    role: '', // ADMIN | PROFESSOR | STUDENT
   },
   
   setUser: (user) => set({ user }),

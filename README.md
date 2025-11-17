@@ -147,13 +147,11 @@ smartid-frontend/
 - **react-webcam** - Camera access for biometric capture
 - **date-fns** - Date formatting and manipulation
 
-## 📖 Documentation
+## 📖 Additional Documentation
 
-- [Quick Start Guide](QUICKSTART.md)
-- [Role-Based Portals](ROLE_BASED_PORTALS.md)
-- [Enrollment System](ENROLLMENT_SYSTEM.md)
-- [Installation Guide](INSTALLATION_GUIDE.md)
-- [Project Summary](PROJECT_SUMMARY.md)
+- [Portal Access Guide](PORTAL_ACCESS_GUIDE.md) - Detailed guide for each role's portal
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to the project
+- [License](LICENSE) - MIT License details
 
 ## 🎨 Features Overview
 

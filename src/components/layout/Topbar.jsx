@@ -19,7 +19,16 @@ const Topbar = ({ onMenuClick }) => {
   };
 
   const handleLogout = () => {
-    // Clear user data and redirect to login
+    // Clear user data
+    useAppStore.setState({ 
+      user: { 
+        id: '', 
+        username: '', 
+        email: '', 
+        role: '' 
+      } 
+    });
+    // Redirect to login
     navigate('/login');
   };
 
@@ -53,6 +62,28 @@ const Topbar = ({ onMenuClick }) => {
           <span className="text-sm font-medium">{i18n.language.toUpperCase()}</span>
         </button>
 
+        {/* Role Badge - Prominent Display */}
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 ${
+          user.role === 'ADMIN' ? 'bg-red-50 dark:bg-red-900/20 border-red-500' :
+          user.role === 'PROFESSOR' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500' :
+          'bg-green-50 dark:bg-green-900/20 border-green-500'
+        }`}>
+          <div className={`w-2 h-2 rounded-full ${
+            user.role === 'ADMIN' ? 'bg-red-500' :
+            user.role === 'PROFESSOR' ? 'bg-blue-500' :
+            'bg-green-500'
+          } animate-pulse`} />
+          <span className={`text-sm font-bold ${
+            user.role === 'ADMIN' ? 'text-red-700 dark:text-red-300' :
+            user.role === 'PROFESSOR' ? 'text-blue-700 dark:text-blue-300' :
+            'text-green-700 dark:text-green-300'
+          }`}>
+            {user.role === 'ADMIN' ? '👨‍💼 ADMIN' :
+             user.role === 'PROFESSOR' ? '👨‍🏫 PROFESSOR' :
+             '👨‍🎓 STUDENT'}
+          </span>
+        </div>
+
         <div className="relative pl-4 border-l border-slate-200 dark:border-slate-700">
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
@@ -60,10 +91,14 @@ const Topbar = ({ onMenuClick }) => {
           >
             <div className="text-right">
               <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{user.username}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t(`roles.${user.role}`)}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
-              {user.username[0].toUpperCase()}
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
+              user.role === 'ADMIN' ? 'bg-red-500' :
+              user.role === 'PROFESSOR' ? 'bg-blue-500' :
+              'bg-green-500'
+            }`}>
+              {user.username[0]?.toUpperCase()}
             </div>
           </button>
 
@@ -83,7 +118,7 @@ const Topbar = ({ onMenuClick }) => {
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
-                    navigate('/settings');
+                    navigate('/dashboard/settings');
                   }}
                   className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                 >
@@ -94,7 +129,7 @@ const Topbar = ({ onMenuClick }) => {
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
-                    navigate('/settings');
+                    navigate('/dashboard/settings');
                   }}
                   className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                 >

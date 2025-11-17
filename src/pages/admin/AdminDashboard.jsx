@@ -5,7 +5,7 @@ import useAppStore from '../../store/useAppStore';
 import { Users, BookOpen, UserCheck, Settings as SettingsIcon } from 'lucide-react';
 
 const AdminDashboard = () => {
-  const { students, courses, attendance, attendanceMethods } = useAppStore();
+  const { students, courses, attendanceMethods } = useAppStore();
 
   const stats = [
     { label: 'Total Students', value: students.length, icon: Users, color: 'bg-blue-500' },
@@ -37,6 +37,19 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* Role Banner */}
+      <div className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">
+            👨‍💼
+          </div>
+          <div>
+            <p className="text-sm opacity-90">Accessing as</p>
+            <h2 className="text-2xl font-bold">Administrator Portal</h2>
+          </div>
+        </div>
+      </div>
+
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Admin Dashboard</h1>
         <p className="text-slate-600 dark:text-slate-400 mt-2">Manage students, courses, and attendance methods</p>
@@ -87,7 +100,7 @@ const AdminDashboard = () => {
             <Users className="mx-auto mb-3 text-primary" size={32} />
             <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Enroll Students</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Add new students to the system</p>
-            <a href="/enroll" className="text-primary hover:text-primary-600 font-medium text-sm">
+            <a href="/dashboard/enroll" className="text-primary hover:text-primary-600 font-medium text-sm">
               Go to Enrollment →
             </a>
           </div>
@@ -98,7 +111,7 @@ const AdminDashboard = () => {
             <SettingsIcon className="mx-auto mb-3 text-primary" size={32} />
             <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Configure Methods</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Manage attendance methods</p>
-            <a href="/admin/attendance-methods" className="text-primary hover:text-primary-600 font-medium text-sm">
+            <a href="/dashboard/admin/attendance-methods" className="text-primary hover:text-primary-600 font-medium text-sm">
               Configure Settings →
             </a>
           </div>
@@ -109,7 +122,7 @@ const AdminDashboard = () => {
             <BookOpen className="mx-auto mb-3 text-primary" size={32} />
             <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">View Reports</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Access attendance reports</p>
-            <a href="/reports" className="text-primary hover:text-primary-600 font-medium text-sm">
+            <a href="/dashboard/reports" className="text-primary hover:text-primary-600 font-medium text-sm">
               View Reports →
             </a>
           </div>

@@ -83,7 +83,7 @@ const SignUp = () => {
         email: formData.email,
         role: formData.role,
       });
-      navigate('/');
+      navigate('/dashboard');
       setLoading(false);
     }, 1500);
   };
