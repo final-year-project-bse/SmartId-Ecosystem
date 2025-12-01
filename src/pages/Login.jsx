@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { LogIn, Eye, EyeOff, UserCircle, GraduationCap, Shield } from 'lucide-react';
+import { LogIn, Eye, EyeOff, Shield } from 'lucide-react';
 import useAppStore from '../store/useAppStore';
 
 const Login = () => {
@@ -12,7 +12,7 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: 'STUDENT', // Default role
+    role: 'ADMIN', // Only Admin allowed
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,63 +21,64 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address (e.g., admin@gmail.com)');
+      return;
+    }
+    
+    // Password validation
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+    
     setLoading(true);
 
-    // Get all users from store
-    const { students, professors, admins } = useAppStore.getState();
-    
-    // Combine all users based on selected role
-    let allUsers = [];
-    if (formData.role === 'ADMIN') {
-      allUsers = admins.map(u => ({ ...u, role: 'ADMIN' }));
-    } else if (formData.role === 'PROFESSOR') {
-      allUsers = professors.map(u => ({ ...u, role: 'PROFESSOR' }));
-    } else if (formData.role === 'STUDENT') {
-      allUsers = students.map(u => ({ ...u, role: 'STUDENT' }));
-    }
-
-    // Simulate authentication
-    setTimeout(() => {
-      // Find user by email and role
-      const user = allUsers.find(u => u.email === formData.email);
-
-      if (!user) {
-        setError(`No ${formData.role.toLowerCase()} account found with this email.`);
-        setLoading(false);
-        return;
-      }
-
-      if (!user.hasAccess) {
-        setError('Your account has been disabled. Please contact admin.');
-        setLoading(false);
-        return;
-      }
-
-      if (user.password !== formData.password) {
-        setError('Incorrect password. Please try again.');
-        setLoading(false);
-        return;
-      }
-
-      // Successful login
-      setUser({
-        id: user.id,
-        username: user.name,
-        email: user.email,
-        role: user.role,
+    try {
+      const response = await fetch('/api/auth/users/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
       });
-      
-      // Redirect to role-specific dashboard
-      if (user.role === 'ADMIN') {
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Store tokens
+        if (data.tokens) {
+          localStorage.setItem('access_token', data.tokens.access);
+          localStorage.setItem('refresh_token', data.tokens.refresh);
+        }
+        
+        // Set user in store
+        setUser({
+          id: data.user.id,
+          username: data.user.username,
+          email: data.user.email,
+          role: data.user.role,
+        });
+        
+        // Redirect to admin dashboard
         navigate('/admin/dashboard');
-      } else if (user.role === 'PROFESSOR') {
-        navigate('/professor/dashboard');
-      } else if (user.role === 'STUDENT') {
-        navigate('/student/dashboard');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Login failed. Please check your credentials.');
       }
-      
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Unable to connect to server. Please try again later.');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -105,50 +106,14 @@ const Login = () => {
               </div>
             )}
 
-            {/* Role Selection */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-                Login As
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'STUDENT' })}
-                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
-                    formData.role === 'STUDENT'
-                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
-                  }`}
-                >
-                  <GraduationCap size={24} className="mb-2" />
-                  <span className="text-sm font-medium">Student</span>
-                </button>
-                
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'PROFESSOR' })}
-                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
-                    formData.role === 'PROFESSOR'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
-                  }`}
-                >
-                  <UserCircle size={24} className="mb-2" />
-                  <span className="text-sm font-medium">Teacher</span>
-                </button>
-                
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'ADMIN' })}
-                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
-                    formData.role === 'ADMIN'
-                      ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
-                  }`}
-                >
-                  <Shield size={24} className="mb-2" />
-                  <span className="text-sm font-medium">Admin</span>
-                </button>
+            {/* Admin Only Notice */}
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+              <div className="flex items-center gap-3">
+                <Shield size={32} className="text-red-600 dark:text-red-400" />
+                <div>
+                  <p className="font-semibold text-red-900 dark:text-red-100">Administrator Access Only</p>
+                  <p className="text-sm text-red-700 dark:text-red-300">This system is restricted to administrators</p>
+                </div>
               </div>
             </div>
 

@@ -8,27 +8,57 @@ import useAppStore from '../../store/useAppStore';
 import { UserPlus, Search, Edit, Trash2 } from 'lucide-react';
 
 const ManageStudents = () => {
-  const { students, courses, addStudent, updateStudent } = useAppStore();
+  const { students, courses, deleteStudent } = useAppStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAddModal, setShowAddModal] = useState(false);
 
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleDelete = async (studentId) => {
+    if (window.confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
+      try {
+        // Delete from backend
+        const response = await fetch(`/api/auth/users/${studentId}/`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        });
+
+        if (response.ok) {
+          // Delete from store
+          deleteStudent(studentId);
+          alert('Student deleted successfully');
+        } else {
+          alert('Failed to delete student');
+        }
+      } catch (error) {
+        console.error('Error deleting student:', error);
+        alert('Error deleting student');
+      }
+    }
+  };
+
+  const safeStudents = students || [];
+  const safeCourses = courses || [];
+
+  const filteredStudents = safeStudents.filter(student => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      (student.name || student.username || '').toLowerCase().includes(searchLower) ||
+      (student.id || '').toString().toLowerCase().includes(searchLower) ||
+      (student.email || '').toLowerCase().includes(searchLower)
+    );
+  });
 
   const headers = ['Student ID', 'Name', 'Email', 'Enrolled Courses', 'Status', 'Actions'];
 
   const renderRow = (student) => (
     <>
       <td className="py-3 px-4 text-sm font-medium text-slate-900 dark:text-slate-100">{student.id}</td>
-      <td className="py-3 px-4 text-sm text-slate-900 dark:text-slate-100">{student.name}</td>
+      <td className="py-3 px-4 text-sm text-slate-900 dark:text-slate-100">{student.name || student.username}</td>
       <td className="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">{student.email}</td>
       <td className="py-3 px-4 text-sm">
         <div className="flex flex-wrap gap-1">
-          {student.enrolledCourses.map(courseId => {
-            const course = courses.find(c => c.id === courseId);
+          {(student.enrolledCourses || []).map(courseId => {
+            const course = safeCourses.find(c => c.id === courseId);
             return course ? (
               <Badge key={courseId} variant="primary" className="text-xs">
                 {course.code}
@@ -39,15 +69,23 @@ const ManageStudents = () => {
       </td>
       <td className="py-3 px-4 text-sm">
         <Badge variant={student.status === 'active' ? 'success' : 'default'}>
-          {student.status}
+          {student.status || 'active'}
         </Badge>
       </td>
       <td className="py-3 px-4 text-sm">
         <div className="flex items-center gap-2">
-          <button className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+          <button 
+            onClick={() => alert('Edit functionality coming soon!')}
+            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition"
+            title="Edit Student"
+          >
             <Edit size={16} className="text-primary" />
           </button>
-          <button className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+          <button 
+            onClick={() => handleDelete(student.id)}
+            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition"
+            title="Delete Student"
+          >
             <Trash2 size={16} className="text-red-500" />
           </button>
         </div>
@@ -64,7 +102,7 @@ const ManageStudents = () => {
             View and manage all enrolled students
           </p>
         </div>
-        <Button onClick={() => setShowAddModal(true)} className="flex items-center gap-2">
+        <Button onClick={() => window.location.href = '/admin/enroll'} className="flex items-center gap-2">
           <UserPlus size={20} />
           Add Student
         </Button>
@@ -74,20 +112,20 @@ const ManageStudents = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <div className="text-center">
-            <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{students.length}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{safeStudents.length}</p>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Total Students</p>
           </div>
         </Card>
         <Card>
           <div className="text-center">
-            <p className="text-3xl font-bold text-green-600">{students.filter(s => s.status === 'active').length}</p>
+            <p className="text-3xl font-bold text-green-600">{safeStudents.filter(s => s.status === 'active').length}</p>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Active</p>
           </div>
         </Card>
         <Card>
           <div className="text-center">
             <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-              {Math.round(students.reduce((sum, s) => sum + s.enrolledCourses.length, 0) / students.length)}
+              {safeStudents.length > 0 ? Math.round(safeStudents.reduce((sum, s) => sum + (s.enrolledCourses || []).length, 0) / safeStudents.length) : 0}
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Avg Courses</p>
           </div>

@@ -13,19 +13,20 @@ const UserAccounts = () => {
   const [showPasswords, setShowPasswords] = useState({});
   const [filterRole, setFilterRole] = useState('ALL');
 
-  // Combine all users
+  // Combine all users - handle undefined/null arrays
   const allUsers = [
-    ...admins.map(u => ({ ...u, role: 'ADMIN' })),
-    ...professors.map(u => ({ ...u, role: 'PROFESSOR' })),
-    ...students.map(u => ({ ...u, role: 'STUDENT' })),
+    ...(admins || []).map(u => ({ ...u, role: 'ADMIN' })),
+    ...(professors || []).map(u => ({ ...u, role: 'PROFESSOR' })),
+    ...(students || []).map(u => ({ ...u, role: 'STUDENT' })),
   ];
 
   // Filter users
   const filteredUsers = allUsers.filter(user => {
+    const searchLower = searchTerm.toLowerCase();
     const matchesSearch = 
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      (user.name || user.username || '').toLowerCase().includes(searchLower) ||
+      (user.id || '').toString().toLowerCase().includes(searchLower) ||
+      (user.email || '').toLowerCase().includes(searchLower);
     
     const matchesRole = filterRole === 'ALL' || user.role === filterRole;
     
@@ -130,9 +131,9 @@ const UserAccounts = () => {
 
   const stats = [
     { label: 'Total Users', value: allUsers.length, color: 'bg-blue-500' },
-    { label: 'Students', value: students.length, color: 'bg-green-500' },
-    { label: 'Professors', value: professors.length, color: 'bg-purple-500' },
-    { label: 'Admins', value: admins.length, color: 'bg-red-500' },
+    { label: 'Students', value: (students || []).length, color: 'bg-green-500' },
+    { label: 'Professors', value: (professors || []).length, color: 'bg-purple-500' },
+    { label: 'Admins', value: (admins || []).length, color: 'bg-red-500' },
   ];
 
   return (
@@ -193,7 +194,26 @@ const UserAccounts = () => {
             <strong>Security Notice:</strong> Keep these credentials secure. Only share them with authorized users through secure channels.
           </p>
         </div>
-        <Table headers={headers} data={filteredUsers} renderRow={renderRow} />
+        {filteredUsers.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-slate-400 mb-4">
+              <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">No users found</h3>
+            <p className="text-slate-600 dark:text-slate-400 mb-4">
+              {searchTerm || filterRole !== 'ALL' 
+                ? 'Try adjusting your search or filter criteria' 
+                : 'Start by enrolling new users to the system'}
+            </p>
+            <Button onClick={() => window.location.href = '/admin/enroll'}>
+              Enroll New User
+            </Button>
+          </div>
+        ) : (
+          <Table headers={headers} data={filteredUsers} renderRow={renderRow} />
+        )}
       </Card>
 
       {/* Quick Actions */}

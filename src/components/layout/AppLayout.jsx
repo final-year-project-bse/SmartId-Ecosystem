@@ -2,9 +2,13 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import { useDataFetch } from '../../hooks/useDataFetch';
 
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  
+  // Fetch data from backend on mount
+  useDataFetch();
 
   return (
     <div className="flex h-screen overflow-hidden">

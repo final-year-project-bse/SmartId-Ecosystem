@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Moon, Sun, Globe, LogOut, User, Settings as SettingsIcon } from 'lucide-react';
+import { Menu, Moon, Sun, LogOut } from 'lucide-react';
 import { useTheme } from '../ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import useAppStore from '../../store/useAppStore';
@@ -12,22 +12,13 @@ const Topbar = ({ onMenuClick }) => {
   const user = useAppStore((state) => state.user);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'ur' : 'en';
-    i18n.changeLanguage(newLang);
-    localStorage.setItem('language', newLang);
-  };
+
+
+  const logout = useAppStore((state) => state.logout);
 
   const handleLogout = () => {
-    // Clear user data
-    useAppStore.setState({ 
-      user: { 
-        id: '', 
-        username: '', 
-        email: '', 
-        role: '' 
-      } 
-    });
+    // Clear user data using store logout function
+    logout();
     // Redirect to login
     navigate('/login');
   };
@@ -42,49 +33,19 @@ const Topbar = ({ onMenuClick }) => {
         <Menu size={24} />
       </button>
 
+      {/* Theme Toggle - Moved to Front */}
+      <button
+        onClick={toggleTheme}
+        className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+        aria-label="Toggle theme"
+      >
+        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+      </button>
+
       <div className="flex-1" />
 
       <div className="flex items-center gap-4">
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-          aria-label="Toggle theme"
-        >
-          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-        </button>
-
-        <button
-          onClick={toggleLanguage}
-          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
-          aria-label="Toggle language"
-        >
-          <Globe size={20} />
-          <span className="text-sm font-medium">{i18n.language.toUpperCase()}</span>
-        </button>
-
-        {/* Role Badge - Prominent Display */}
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 ${
-          user.role === 'ADMIN' ? 'bg-red-50 dark:bg-red-900/20 border-red-500' :
-          user.role === 'PROFESSOR' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500' :
-          'bg-green-50 dark:bg-green-900/20 border-green-500'
-        }`}>
-          <div className={`w-2 h-2 rounded-full ${
-            user.role === 'ADMIN' ? 'bg-red-500' :
-            user.role === 'PROFESSOR' ? 'bg-blue-500' :
-            'bg-green-500'
-          } animate-pulse`} />
-          <span className={`text-sm font-bold ${
-            user.role === 'ADMIN' ? 'text-red-700 dark:text-red-300' :
-            user.role === 'PROFESSOR' ? 'text-blue-700 dark:text-blue-300' :
-            'text-green-700 dark:text-green-300'
-          }`}>
-            {user.role === 'ADMIN' ? '👨‍💼 ADMIN' :
-             user.role === 'PROFESSOR' ? '👨‍🏫 PROFESSOR' :
-             '👨‍🎓 STUDENT'}
-          </span>
-        </div>
-
-        <div className="relative pl-4 border-l border-slate-200 dark:border-slate-700">
+        <div className="relative">
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
@@ -115,29 +76,7 @@ const Topbar = ({ onMenuClick }) => {
                   <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
                 </div>
                 
-                <button
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    navigate('/dashboard/settings');
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                >
-                  <User size={16} />
-                  Profile
-                </button>
-                
-                <button
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    navigate('/dashboard/settings');
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                >
-                  <SettingsIcon size={16} />
-                  Settings
-                </button>
-                
-                <div className="border-t border-slate-200 dark:border-slate-700 my-2" />
+
                 
                 <button
                   onClick={handleLogout}

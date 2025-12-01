@@ -19,24 +19,28 @@ const Reports = () => {
     endDate: '',
   });
 
+  const safeCourses = courses || [];
+  const safeAttendance = attendance || [];
+  const safeSessions = sessions || [];
+
   const courseOptions = [
     { value: 'all', label: 'All Courses' },
-    ...courses.map(c => ({ value: c.id, label: c.name })),
+    ...safeCourses.map(c => ({ value: c.id, label: c.name })),
   ];
 
-  const filteredSessions = sessions.filter(s => {
+  const filteredSessions = safeSessions.filter(s => {
     if (filters.courseId !== 'all' && s.courseId !== filters.courseId) return false;
     if (filters.startDate && s.date < filters.startDate) return false;
     if (filters.endDate && s.date > filters.endDate) return false;
     return true;
   });
 
-  const filteredAttendance = attendance.filter(a =>
+  const filteredAttendance = safeAttendance.filter(a =>
     filteredSessions.some(s => s.id === a.sessionId)
   );
 
   const chartData = aggregateAttendanceForChart(filteredAttendance, filteredSessions);
-  const tableData = aggregateAttendanceByDate(filteredAttendance, filteredSessions, courses);
+  const tableData = aggregateAttendanceByDate(filteredAttendance, filteredSessions, safeCourses);
 
   const exportToCSV = () => {
     const headers = ['Date', 'Course', 'Present', 'Absent', 'Percentage'];

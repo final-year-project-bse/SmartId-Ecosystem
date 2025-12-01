@@ -9,14 +9,18 @@ const Today = () => {
   const { t } = useTranslation();
   const { attendance, sessions, courses } = useAppStore();
   
+  const safeAttendance = attendance || [];
+  const safeSessions = sessions || [];
+  const safeCourses = courses || [];
+  
   const today = format(new Date(), 'yyyy-MM-dd');
-  const todaySessions = sessions.filter(s => s.date === today);
-  const todayAttendance = attendance.filter(a => 
+  const todaySessions = safeSessions.filter(s => s.date === today);
+  const todayAttendance = safeAttendance.filter(a => 
     todaySessions.some(s => s.id === a.sessionId)
   );
 
   const chartData = aggregateAttendanceForChart(todayAttendance, todaySessions);
-  const tableData = aggregateAttendanceByDate(todayAttendance, todaySessions, courses);
+  const tableData = aggregateAttendanceByDate(todayAttendance, todaySessions, safeCourses);
 
   return (
     <div className="space-y-6">
