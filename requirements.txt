@@ -1,0 +1,30 @@
+# Django Core
+Django==5.0.1
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+
+# Database
+mysqlclient==2.2.1  # For MySQL (optional)
+
+# Authentication & Security
+djangorestframework-simplejwt==5.3.1
+django-allauth==0.57.0
+
+# Image Processing (for facial recognition)
+Pillow==10.2.0
+opencv-python==4.9.0.80
+face-recognition==1.3.0
+numpy==1.26.3
+
+# API Documentation
+drf-yasg==1.21.7
+
+# Environment Variables
+python-decouple==3.8
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Development
+django-debug-toolbar==4.2.0
