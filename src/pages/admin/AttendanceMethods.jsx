@@ -83,22 +83,7 @@ const AttendanceMethods = () => {
         })}
       </div>
 
-      <Card title="Configuration Notes">
-        <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-          <p>
-            <strong className="text-slate-900 dark:text-slate-100">Face Recognition:</strong> Requires camera access and facial data enrollment. Most accurate in good lighting conditions.
-          </p>
-          <p>
-            <strong className="text-slate-900 dark:text-slate-100">Fingerprint:</strong> Requires fingerprint scanner hardware. Highly secure and reliable.
-          </p>
-          <p>
-            <strong className="text-slate-900 dark:text-slate-100">RFID Card:</strong> Requires RFID card reader and student ID cards with RFID chips.
-          </p>
-          <p>
-            <strong className="text-slate-900 dark:text-slate-100">QR Code:</strong> Students can scan QR codes displayed in classroom using their mobile devices.
-          </p>
-        </div>
-      </Card>
+
     </div>
   );
 };
